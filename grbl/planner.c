@@ -274,6 +274,51 @@ uint8_t plan_check_full_buffer()
   int32_t target_steps[N_AXIS];
   float unit_vec[N_AXIS], delta_mm;
   uint8_t idx;
+  #ifdef POLARGRAPH
+    target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
+    target_steps[B_MOTOR] = lround(target[B_MOTOR]*settings.steps_per_mm[B_MOTOR]);
+
+    float plPositionPolar[N_AXIS];
+    float xPos = settings.distance * settings.steps_per_mm[A_MOTOR] - pl.position[X_AXIS];
+    plPositionPolar[A_MOTOR] = sqrt(labs(pl.position[X_AXIS]*pl.position[X_AXIS]+pl.position[Y_AXIS]*pl.position[Y_AXIS]));
+    plPositionPolar[B_MOTOR] = sqrt(labs(xPos*xPos+pl.position[Y_AXIS]*pl.position[Y_AXIS]));
+
+    float target_polar[N_AXIS];
+    float x = settings.distance - target[X_AXIS];
+    target_polar[A_MOTOR] = sqrt(labs(target[X_AXIS]*target[X_AXIS]+target[Y_AXIS]*target[Y_AXIS])) * settings.steps_per_mm[A_MOTOR];
+    target_polar[B_MOTOR] = sqrt(labs(x*x+target[Y_AXIS]*target[Y_AXIS])) * settings.steps_per_mm[B_MOTOR];
+    //
+    block->steps[A_MOTOR] = labs(target_polar[A_MOTOR] - plPositionPolar[A_MOTOR]);
+    block->steps[B_MOTOR] = labs(target_polar[B_MOTOR] - plPositionPolar[B_MOTOR]);
+
+
+    printPgmString(PSTR(" Pol:\r\n")); 
+    printFloat(target[X_AXIS],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR(" ")); 
+    printFloat(target[Y_AXIS],N_DECIMAL_SETTINGVALUE);
+    
+    printPgmString(PSTR(" -> Pos:")); 
+    printFloat(pl.position[A_MOTOR],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR(", ")); 
+    printFloat(pl.position[B_MOTOR],N_DECIMAL_SETTINGVALUE);
+
+    printPgmString(PSTR(" PlPos: ")); 
+    printFloat(plPositionPolar[A_MOTOR],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR(", ")); 
+    printFloat(plPositionPolar[B_MOTOR],N_DECIMAL_SETTINGVALUE);
+
+/*
+    printPgmString(PSTR(" TPol:")); 
+    printFloat(target_polar[A_MOTOR],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR(", ")); 
+    printFloat(target_polar[B_MOTOR],N_DECIMAL_SETTINGVALUE);
+    */
+    printPgmString(PSTR(" BSteps")); 
+    printFloat(block->steps[A_MOTOR],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR(", ")); 
+    printFloat(block->steps[B_MOTOR],N_DECIMAL_SETTINGVALUE);
+    printPgmString(PSTR("\r\n")); 
+  #endif
   #ifdef COREXY
     target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
     target_steps[B_MOTOR] = lround(target[B_MOTOR]*settings.steps_per_mm[B_MOTOR]);
@@ -299,10 +344,21 @@ uint8_t plan_check_full_buffer()
         delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
       }
     #else
+    #ifdef POLARGRAPH
+      block->step_event_count = max(block->step_event_count, block->steps[idx]);
+      if (idx == A_MOTOR) {
+        delta_mm = (target_polar[A_MOTOR] - plPositionPolar[A_MOTOR]) / settings.steps_per_mm[idx];
+      } else if (idx == B_MOTOR) {
+        delta_mm = (target_polar[B_MOTOR] - plPositionPolar[B_MOTOR]) / settings.steps_per_mm[idx];
+      } else {
+        delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
+      }
+    #else
       target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
       block->steps[idx] = labs(target_steps[idx]-pl.position[idx]);
       block->step_event_count = max(block->step_event_count, block->steps[idx]);
       delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
+    #endif
     #endif
     unit_vec[idx] = delta_mm; // Store unit vector numerator. Denominator computed later.
         
@@ -407,6 +463,13 @@ uint8_t plan_check_full_buffer()
   // Update planner position
   memcpy(pl.position, target_steps, sizeof(target_steps)); // pl.position[] = target_steps[]
 
+  // DEBUG position
+  /*printPgmString(PSTR("-NPos:")); 
+  printFloat(pl.position[A_MOTOR],N_DECIMAL_SETTINGVALUE);
+  printPgmString(PSTR(",")); 
+  printFloat(pl.position[B_MOTOR],N_DECIMAL_SETTINGVALUE);
+  printPgmString(PSTR("\r\n")); */
+
   // New block is all set. Update buffer head and next buffer head indices.
   block_buffer_head = next_buffer_head;  
   next_buffer_head = plan_next_block_index(block_buffer_head);
@@ -432,7 +495,12 @@ void plan_sync_position()
         pl.position[idx] = sys.position[idx];
       }
     #else
+    #ifdef POLARGRAPH
+      // TODO
       pl.position[idx] = sys.position[idx];
+    #else
+      pl.position[idx] = sys.position[idx];
+    #endif
     #endif
   }
 }
