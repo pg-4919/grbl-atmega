@@ -143,5 +143,6 @@
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
   #define SPINDLE_PWM_DDR	  DDRB
   #define SPINDLE_PWM_PORT  PORTB
-  #define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
+  #define SPINDLE_PWM_BIT	  1    // Uno Digital Pin 9 (PB1)
+  //#define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
 #endif // End of VARIABLE_SPINDLE

@@ -31,7 +31,8 @@
 
 
 // Default settings. Used when resetting EEPROM. Change to desired name in defaults.h
-#define DEFAULTS_GENERIC
+//#define DEFAULTS_GENERIC
+#define DEFAULTS_POLAR
 
 // Serial baud rate
 #define BAUD_RATE 115200
@@ -42,8 +43,21 @@
 #define CPU_MAP_POLARGRAPH // Polargraph with Nano and CNC shield v4
 
 // Enable Polargraph calculations
+/* If POLAR is enabled the coordinates of the machine movement are changed to polar.
+ * To active this feature is required to know the distance (d) between the two motors
+ * 		___d___
+	 	  \     /       |
+	x_pol\   / y_pol  | y
+		    \ /         |
+	   ___ +
+ *	    x
+ */
 #define POLARGRAPH
 #define DEFAULT_DISTANCE 740 // mm
+//Spindle is controled by a servo.Use the PIN D11 to drive the servo. Use the commands M03 Sxxx (xxx between 0 and 255)
+//to rotate the servo between 0-180. The command M05 turn the servo to zero degrees.
+#define RC_SERVO
+// #define RC_SERVO_INVERT
 
 // Define realtime command special characters. These characters are 'picked-off' directly from the
 // serial read data stream and are not passed to the grbl line execution parser. Select characters
