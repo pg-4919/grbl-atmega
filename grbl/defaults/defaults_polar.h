@@ -28,8 +28,9 @@
 #define defaults_h
 
   // Grbl generic default settings. Should work across different machines.
-  #define DEFAULT_X_STEPS_PER_MM 5
-  #define DEFAULT_Y_STEPS_PER_MM 5
+  // Steps/mm calculator: https://zalophusdokdo.github.io/StepperMotorsCalculator/en/index.html
+  #define DEFAULT_X_STEPS_PER_MM 80 // 20 tooth, GT2, 16 microstepping -> 80 steps/mm
+  #define DEFAULT_Y_STEPS_PER_MM 80
   #define DEFAULT_Z_STEPS_PER_MM 250.0
   #define DEFAULT_X_MAX_RATE 5000.0 // mm/min
   #define DEFAULT_Y_MAX_RATE 5000.0 // mm/min

@@ -291,7 +291,7 @@ uint8_t plan_check_full_buffer()
     block->steps[A_MOTOR] = labs(target_polar[A_MOTOR] - plPositionPolar[A_MOTOR]);
     block->steps[B_MOTOR] = labs(target_polar[B_MOTOR] - plPositionPolar[B_MOTOR]);
 
-
+#ifdef POLARGRAPH_DEBUG_PLANNER
     printPgmString(PSTR(" Pol:\r\n")); 
     printFloat(target[X_AXIS],N_DECIMAL_SETTINGVALUE);
     printPgmString(PSTR(" ")); 
@@ -307,17 +307,13 @@ uint8_t plan_check_full_buffer()
     printPgmString(PSTR(", ")); 
     printFloat(plPositionPolar[B_MOTOR],N_DECIMAL_SETTINGVALUE);
 
-/*
-    printPgmString(PSTR(" TPol:")); 
-    printFloat(target_polar[A_MOTOR],N_DECIMAL_SETTINGVALUE);
-    printPgmString(PSTR(", ")); 
-    printFloat(target_polar[B_MOTOR],N_DECIMAL_SETTINGVALUE);
-    */
     printPgmString(PSTR(" BSteps")); 
     printFloat(block->steps[A_MOTOR],N_DECIMAL_SETTINGVALUE);
     printPgmString(PSTR(", ")); 
     printFloat(block->steps[B_MOTOR],N_DECIMAL_SETTINGVALUE);
     printPgmString(PSTR("\r\n")); 
+#endif
+
   #endif
   #ifdef COREXY
     target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
