@@ -38,6 +38,12 @@ int main(void)
   sys.abort = true;   // Set abort to complete initialization
   sei(); // Enable interrupts
 
+  #ifdef POLARGRAPH
+  sys.position[X_AXIS] = 370 * settings.steps_per_mm[X_AXIS];
+  sys.position[Y_AXIS] = 60 * settings.steps_per_mm[Y_AXIS];
+  plan_sync_position();
+  #endif
+
   // Check for power-up and set system alarm if homing is enabled to force homing cycle
   // by setting Grbl's alarm state. Alarm locks out all g-code commands, including the
   // startup scripts, but allows access to settings and internal commands. Only a homing
