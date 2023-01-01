@@ -38,7 +38,27 @@
 
 // Default cpu mappings. Grbl officially supports the Arduino Uno only. Other processor types
 // may exist from user-supplied templates or directly user-defined in cpu_map.h
-#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+//#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+#define CPU_MAP_POLARGRAPH // Polargraph with Nano and CNC shield v4
+
+// Enable Polargraph calculations
+/* If POLAR is enabled the coordinates of the machine movement are changed to polar.
+ * To active this feature is required to know the distance (d) between the two motors
+ * 		___d___
+	 	  \     /       |
+	x_pol\   / y_pol  | y
+		    \ /         |
+	   ___ +
+ *	    x
+ */
+#define POLARGRAPH
+#define POLARGRAPH_ASSUME_MANUALLY_HOMED // when it starts up, assume gondola is manually at the home position (top middle)
+//Spindle is controled by a servo.Use the PIN D11 to drive the servo. Use the commands M03 Sxxx (xxx between 0 and 255)
+//to rotate the servo between 0-180. The command M05 turn the servo to zero degrees.
+#define RC_SERVO
+// #define RC_SERVO_INVERT
+
+// #define POLARGRAPH_DEBUG_PLANNER
 
 // Define realtime command special characters. These characters are 'picked-off' directly from the
 // serial read data stream and are not passed to the grbl line execution parser. Select characters

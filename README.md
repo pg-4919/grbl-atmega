@@ -1,92 +1,122 @@
-![GitHub Logo](https://github.com/gnea/gnea-Media/blob/master/Grbl%20Logo/Grbl%20Logo%20250px.png?raw=true)
-***
-
-### Grbl v1.1 has been released [here](https://github.com/gnea/grbl/releases)!
-### Notice: This site will be phased out and moved to the new one!
-
-***
-
-Grbl is a no-compromise, high performance, low cost alternative to parallel-port-based motion control for CNC milling. It will run on a vanilla Arduino (Duemillanove/Uno) as long as it sports an Atmega 328. 
-
-The controller is written in highly optimized C utilizing every clever feature of the AVR-chips to achieve precise timing and asynchronous operation. It is able to maintain up to 30kHz of stable, jitter free control pulses.
-
-It accepts standards-compliant g-code and has been tested with the output of several CAM tools with no problems. Arcs, circles and helical motion are fully supported, as well as, all other primary g-code commands. Macro functions, variables, and most canned cycles are not supported, but we think GUIs can do a much better job at translating them into straight g-code anyhow.
-
-Grbl includes full acceleration management with look ahead. That means the controller will look up to 18 motions into the future and plan its velocities ahead to deliver smooth acceleration and jerk-free cornering.
-
-* [Licensing](https://github.com/grbl/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
-
-* For more information and help, check out our **[Wiki pages!](https://github.com/grbl/grbl/wiki)** If you find that the information is out-dated, please to help us keep it updated by editing it or notifying our community! Thanks!
-
-* Lead Developer [_2011 - Current_]: Sungeun(Sonny) K. Jeon, Ph.D. (USA) aka @chamnit
-
-* Lead Developer [_2009 - 2011_]: Simen Svale Skogsrud (Norway). aka The Originator/Creator/Pioneer/Father of Grbl.
-
-***
-
-### Official Supporters of the Grbl CNC Project
-![Official Supporters](https://github.com/gnea/gnea-Media/blob/master/Contributors.png?raw=true)
-
-***
-
-_**Master Branch:**_
-* [Grbl v0.9j Atmega328p 16mhz 115200baud with generic defaults](http://bit.ly/1I8Ey4S) _(2016-03-17)_
-  - **IMPORTANT INFO WHEN UPGRADING TO GRBL v0.9 :** 
-  - Baudrate is now **115200** (Up from 9600). 
-  - Homing cycle updated. Located based on switch trigger, rather than release point.
-  - Variable spindle is now enabled by default. Z-limit(D12) and spindle enable(D11) have switched to access the hardware PWM on D11. Homing will not work if you do not re-wire your Z-limit switch to D12.
-
-_**Archives:**_
-* [Grbl v0.9i Atmega328p 16mhz 115200baud with generic defaults](http://bit.ly/1EiviDk) 
-* [Grbl v0.9g Atmega328p 16mhz 115200baud with generic defaults](http://bit.ly/1m8E1Qa) 
-* [Grbl v0.8c Atmega328p 16mhz 9600baud](http://bit.ly/SSdCJE)
-* [Grbl v0.7d Atmega328p 16mhz 9600baud](http://bit.ly/ZhL15G)
-* [Grbl v0.6b Atmega328p 16mhz 9600baud](http://bit.ly/VD04A5)
-* [Grbl v0.51 Atmega328p 16mhz 9600baud](http://bit.ly/W75BS1)
-* [Grbl v0.6b Atmega168 16mhz 9600baud](http://bit.ly/SScWnE)
-* [Grbl v0.51 Atmega168 16mhz 9600baud](http://bit.ly/VXyrYu)
+# GRBL - fork for Polargraph (wall draw bot)
 
 
-***
+This code is a fork of GRBL, adding code to support wall draw bots based on some of ilaro's code changes.
+* Original GRBL: https://github.com/gnea/grbl
+* Ilaro's polar modifications used for some code: https://github.com/ilaro-org/grbl-polar
 
-## Update Summary for v0.9j
-  - **Restore EEPROM feature:** A new set of restore EEPROM features to help OEMs and users reset their Grbl installation to the build defaults. See Configuring Grbl Wiki for details.
-  - **More configuration options for input pins**
-  - **Bug fixes including:** Soft limit error handling, disable spindle when S0, g-code reporting of G38.x.
-  
-## Update Summary for v0.9i
-  - **IMPORTANT:**
-    - **Homing cycle updated. Locates based on trigger point, rather than release point.**
-    - **System tweaks: $14 cycle auto-start has been removed. No more QUEUE state.**
-  - **New G-Codes** 
-  - **CoreXY Support**
-  - **Safety Door Support**
-  - **Full Limit and Control Pin Configurability**
-  - **Additional Compile-Time Feature Options**
+Major changes to original GRBL
+* Coordinate system - drive motors with polargraph setup
+* Servo motor support (for pen)
+* No homing support
 
-## Update Summary for v0.9h from v0.8
-  - **IMPORTANT:**
-    - **Default serial baudrate is now 115200! (Up from 9600)**
-    - **Z-limit(D12) and spindle enable(D11) pins have switched to support variable spindle!**
-  - **Super Smooth Stepper Algorithm**
-  - **Stability and Robustness Updates**
-  - **(x4)+ Faster Planner**
-  - **Compile-able via Arduino IDE!**
-  - **G-Code Parser Overhaul**
-  - **Independent Acceleration and Velocity Settings**
-  - **Soft Limits**
-  - **Probing**
-  - **Dynamic Tool Length Offsets**
-  - **Improved Arc Performance**
-  - **CPU Pin Mapping**
-  - **New Grbl SIMULATOR! (by @jgeisler and @ashelly)**
-  - **Configurable Real-time Status Reporting**
-  - **Updated Homing Routine**
-  - **Optional Limit Pin Sharing**
-  - **Optional Variable Spindle Speed Output**
-  - **Additional Compile-Time Feature Options**
+You will need
+* A 3D printer (or someone who can print out a few parts)
+* Some soldering skills to fix the CNC board
+* Wires, screws
 
--
+## Hardware
+
+### Mechanics
+
+* Motor mounts with motor and 20T gear
+  * 3D model: [Polargraph / Vertical Plotter Spring Tensioned Motor Mount](https://www.thingiverse.com/thing:3440067)
+  * Motor: NEMA17 1.8 degree motor, example eBay: "Nema 17 Stepper Motor 44Ncm 1.7A 38mm 12V 4-wire w/ 1m Cable for CNC 3D Printer"
+* Belt (GT2)
+  * Example eBay: "GT2 6mm Timing Belt and 20 Teeth 5mm Bore Pulleys Prusa Reprap 3D printer part"
+* Gondola with servo motor and pen
+  * [Kritzlerbot Polargraph (printable)](https://www.thingiverse.com/thing:16692)
+  * SG90 servo, example: "Mini SG90 Micro Servo Motor 9G RC Robot Arm Helicopter Airplane Remote Control"
+  * Servo extension cables
+
+### Electronics
+
+Components:
+* Arduino Nano (mini USB connector)
+* 12V Power supply unit (barrel), 2A minimum
+* CNC Shield V4
+  * Beware of the bugs and quirks of the board
+* 2 x Stepper motor driver modules A4988
+
+#### CNC Shield
+
+The CNC Shield v4 board is a quick and cheap way to create a controller for the polargraph. However the documentation is buggy (lists the wrong pin connections) and the microstepping jumpers near modules are useless, they have to be removed and the MS1/2/3/ pins of modules have to be manually soldered.
+ You can read more details below if you're curious:
+ https://www.instructables.com/How-to-Use-the-CNC-V4-Board-despite-Its-quirks/
+
+We only need to populate the X and Y stepper axis modules on the board.
+
+Pinout:
+| Arduino Pin | Atmega port | Connected to |
+| ----- | ----- | ----- |
+| 2 | PD2 | Stepper X Direction
+| 3 | PD3 | Stepper Y Direction
+| 4 | PD4 | Stepper Z Direction (unused)
+| 5 | PD5 | Stepper X Step
+| 6 | PD6 | Stepper Y Step
+| 7 | PD7 | Stepper Z Step (unused)
+| 8 | PB0 | Stepper enable (all three modules)
+| 11| PB3 | Servo PWM signal
+
+Atmega ports are only for reference if you want to match it up with cpu_map_polargraph.h
+
+... Servo and stepper connections picture HERE ...
+
+
+## Software (PC)
+
+### Universal G-Code Sender
+
+![Image](images/ugs.png)
+
+### Configuration
+
+Connect to the cnc module from Universal G-Code Sender with the appropriate port (eg. COM6). In the console window on the bottom:
+
+* Enter $$ to list all parameters stored in EEPROM
+* Change the following parameters - if needed
+  * x
+
+Parameter summary
+| Param | Value | Description |
+| --- | --- | --- |
+| $100 | 80 | steps/mm (X), for 20 tooth gear and 16 microsteps with GT2 betlt it's 80
+| $101 | 80 | steps/mm (X), for 20 tooth gear and 16 microsteps with GT2 
+| $3   | 0  | Invert motors mask. If stepper X is going in wrong direction, set value=1, if stepper Y then set value=2, if both set value=3. Or you could just turn the board connector around
+| $28 | 740 | Distance (horizontal) between two motors (gears) in millimeters
+| $29 |  60 | Distance (vertical) when gondola is homed from the top (millimeters)
+
+Pen up and down
+
+Pen up:
+M03 S310
+
+Pen down:
+M03 S100
+
+Offsets:
+G92 means “set an offset in all coordinate systems”.
+G92 X0 Y0
+G92.1 -> reset the previous offsets
+
+### Inkscape
+
+Inkscape export to g-code:
+
+ * Documentation on how to [use Inkscape to Generate Gcode](https://wiki.opensourceecology.org/wiki/Using_Inkscape_to_Generate_Gcode)
+   * Install GcodePlot plugin
+   * File > Save As, 3-axis gcode plotter...
+
+
+
+## Notes
+
+### GRBL coordinate handling
+
+Describe...
+
+
+
 ``` 
 List of Supported G-Codes in Grbl v0.9 Master:
   - Non-Modal Commands: G4, G10L2, G10L20, G28, G30, G28.1, G30.1, G53, G92, G92.1

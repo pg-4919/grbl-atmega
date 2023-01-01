@@ -38,6 +38,13 @@ int main(void)
   sys.abort = true;   // Set abort to complete initialization
   sei(); // Enable interrupts
 
+  #ifdef POLARGRAPH_ASSUME_MANUALLY_HOMED
+  // Assume gondola is manually homed
+  sys.position[X_AXIS] = settings.distance * settings.steps_per_mm[X_AXIS] / 2;
+  sys.position[Y_AXIS] = settings.homing_vertical_distance * settings.steps_per_mm[Y_AXIS];
+  plan_sync_position();
+  #endif
+
   // Check for power-up and set system alarm if homing is enabled to force homing cycle
   // by setting Grbl's alarm state. Alarm locks out all g-code commands, including the
   // startup scripts, but allows access to settings and internal commands. Only a homing

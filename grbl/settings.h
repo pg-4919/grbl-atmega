@@ -99,6 +99,10 @@ typedef struct {
   float homing_seek_rate;
   uint16_t homing_debounce_delay;
   float homing_pulloff;
+#ifdef POLARGRAPH
+  float distance; //Distance between motors
+  float homing_vertical_distance; //Distance vertical from top when gondola is homed manually
+#endif
 } settings_t;
 extern settings_t settings;
 
