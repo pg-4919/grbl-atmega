@@ -54,6 +54,7 @@
  */
 #define POLARGRAPH
 #define POLARGRAPH_ASSUME_MANUALLY_HOMED // when it starts up, assume gondola is manually at the home position (top middle)
+#define POLARGRAPH_DISABLE_SOFT_LIMITS // disable all soft limits checks
 //Spindle is controled by a servo.Use the PIN D11 to drive the servo. Use the commands M03 Sxxx (xxx between 0 and 255)
 //to rotate the servo between 0-180. The command M05 turn the servo to zero degrees.
 #define RC_SERVO

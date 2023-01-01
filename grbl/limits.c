@@ -333,6 +333,7 @@ void limits_go_home(uint8_t cycle_mask)
 // the workspace volume is in all negative space, and the system is in normal operation.
 void limits_soft_check(float *target)
 {
+#ifndef POLARGRAPH_DISABLE_SOFT_LIMITS
   uint8_t idx;
   for (idx=0; idx<N_AXIS; idx++) {
    
@@ -367,4 +368,5 @@ void limits_soft_check(float *target)
       return;
     }
   }
+#endif
 }
