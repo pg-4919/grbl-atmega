@@ -241,6 +241,29 @@ uint8_t plan_check_full_buffer()
   return(false);
 }
 
+void convert_position_steps_to_polar_lengths( int32_t *position, float *outPolar ) {
+  float steps_per_mm = settings.steps_per_mm[A_MOTOR];
+  float xPositionMm = position[X_AXIS] / steps_per_mm;
+  float yPositionMm = position[Y_AXIS] / steps_per_mm;
+  float xPosToRightMotorMm = settings.distance - xPositionMm;
+  long xPosSquared = xPositionMm * xPositionMm;
+  long yPosSquared = yPositionMm * yPositionMm;
+  long xPosToRightMotorSquared = xPosToRightMotorMm * xPosToRightMotorMm;
+  outPolar[A_MOTOR] = sqrt(labs(xPosSquared + yPosSquared)) * steps_per_mm;
+  outPolar[B_MOTOR] = sqrt(labs(xPosToRightMotorSquared + yPosSquared)) * steps_per_mm;
+  outPolar[Z_AXIS] = 0;
+}
+void convert_position_mm_float_to_polar_lengths( float *position, float *outPolar ) {
+  float steps_per_mm = settings.steps_per_mm[A_MOTOR];
+  float xPosToRightMotor = settings.distance - position[X_AXIS];
+  long xPosSquared = position[X_AXIS] * position[X_AXIS];
+  long yPosSquared = position[Y_AXIS] * position[Y_AXIS];
+  long xPosToRightMotorSquared = xPosToRightMotor * xPosToRightMotor;
+  outPolar[A_MOTOR] = sqrt(labs(xPosSquared + yPosSquared)) * steps_per_mm;
+  outPolar[B_MOTOR] = sqrt(labs(xPosToRightMotorSquared + yPosSquared)) * steps_per_mm;
+  outPolar[Z_AXIS] = 0;
+}
+
 
 /* Add a new linear movement to the buffer. target[N_AXIS] is the signed, absolute target position
    in millimeters. Feed rate specifies the speed of the motion. If feed rate is inverted, the feed
@@ -277,17 +300,10 @@ uint8_t plan_check_full_buffer()
   #ifdef POLARGRAPH
     target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
     target_steps[B_MOTOR] = lround(target[B_MOTOR]*settings.steps_per_mm[B_MOTOR]);
-
     float plPositionPolar[N_AXIS];
-    float xPos = settings.distance * settings.steps_per_mm[A_MOTOR] - pl.position[X_AXIS];
-    plPositionPolar[A_MOTOR] = sqrt(labs(pl.position[X_AXIS]*pl.position[X_AXIS]+pl.position[Y_AXIS]*pl.position[Y_AXIS]));
-    plPositionPolar[B_MOTOR] = sqrt(labs(xPos*xPos+pl.position[Y_AXIS]*pl.position[Y_AXIS]));
-
     float target_polar[N_AXIS];
-    float x = settings.distance - target[X_AXIS];
-    target_polar[A_MOTOR] = sqrt(labs(target[X_AXIS]*target[X_AXIS]+target[Y_AXIS]*target[Y_AXIS])) * settings.steps_per_mm[A_MOTOR];
-    target_polar[B_MOTOR] = sqrt(labs(x*x+target[Y_AXIS]*target[Y_AXIS])) * settings.steps_per_mm[B_MOTOR];
-    //
+    convert_position_steps_to_polar_lengths(pl.position, plPositionPolar); // pl.position is always in steps
+    convert_position_mm_float_to_polar_lengths(target, target_polar); // target is always in millimeters
     block->steps[A_MOTOR] = labs(target_polar[A_MOTOR] - plPositionPolar[A_MOTOR]);
     block->steps[B_MOTOR] = labs(target_polar[B_MOTOR] - plPositionPolar[B_MOTOR]);
 
