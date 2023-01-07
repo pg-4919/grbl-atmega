@@ -77,7 +77,9 @@ Pinout:
 
 Atmega ports are only for reference if you want to match it up with cpu_map_polargraph.h
 
-... Servo and stepper connections picture HERE ...
+<img src="images/cncshield/board1.jpg" width=500>
+
+You might need to adjust the A4988 servo driver board motor current with the small potentiometer, there are [instructions on how to do this](https://www.the-diy-life.com/how-to-correctly-set-the-motor-current-limit-on-an-a4988-stepper-motor-driver/).
 
 ## Firmware
 
@@ -180,9 +182,3 @@ Inkscape export to g-code:
 <img src="images/inkscapegcode/inkscapesaveproperties2.png" width=300>
 <img src="images/inkscapegcode/inkscapesaveproperties3.png" width=300>
 
-
-# Notes
-
-## GRBL coordinate handling
-
-Describe...
