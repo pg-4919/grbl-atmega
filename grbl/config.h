@@ -39,8 +39,7 @@
 
 // Default cpu mappings. Grbl officially supports the Arduino Uno only. Other processor types
 // may exist from user-supplied templates or directly user-defined in cpu_map.h
-//#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
-#define CPU_MAP_POLARGRAPH // Polargraph with Nano and CNC shield v4
+#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
 
 // Enable Polargraph calculations
 /* If POLAR is enabled the coordinates of the machine movement are changed to polar.
