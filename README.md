@@ -1,4 +1,4 @@
-# GRBL, modified for a custom card
+# An incredibly niche GRBL fork
 This is a fork of a fork of GRBL designed for a custom version of a Polargraph wall draw bot.
 
 I forked grbl-polargraph instead of the original grbl since John and Ilaro had already implemented polar coordinates, which we needed as we had a dual-spool system as opposed to dual-axis.
